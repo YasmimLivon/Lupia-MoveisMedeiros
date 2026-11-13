@@ -3,8 +3,9 @@
     public class Cliente
     {
         public int Id { get; set; }
-        public string Nome { get; set; }
-        public int Telefone { get; set; }
-        public string Endereço { get; set; }
+        public string Nome { get; set; } = string.Empty;
+        public string Telefone { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public string Endereco { get; set; } = string.Empty;
     }
 }

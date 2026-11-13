@@ -22,6 +22,30 @@ namespace MoveisMedeiros.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MoveisMedeiros.Models.Arquiteto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Arquitetos");
+                });
+
             modelBuilder.Entity("MoveisMedeiros.Models.Checklist", b =>
                 {
                     b.Property<int>("Id")
@@ -40,7 +64,6 @@ namespace MoveisMedeiros.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Emendas")
@@ -49,16 +72,25 @@ namespace MoveisMedeiros.Migrations
                     b.Property<bool>("Fitas")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ItemId")
+                    b.PrimitiveCollection<string>("Fotos")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ItensObraId")
                         .HasColumnType("int");
 
                     b.Property<bool>("Medidas")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ItensObraId");
 
                     b.ToTable("Checklists");
                 });
@@ -71,7 +103,10 @@ namespace MoveisMedeiros.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Endereço")
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Endereco")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -79,8 +114,9 @@ namespace MoveisMedeiros.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Telefone")
-                        .HasColumnType("int");
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -103,11 +139,9 @@ namespace MoveisMedeiros.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Foto")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Largura")
@@ -130,6 +164,8 @@ namespace MoveisMedeiros.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ObraId");
+
                     b.ToTable("ItensObras");
                 });
 
@@ -145,8 +181,9 @@ namespace MoveisMedeiros.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Telefone")
-                        .HasColumnType("int");
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -160,6 +197,9 @@ namespace MoveisMedeiros.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArquitetoId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
@@ -190,6 +230,12 @@ namespace MoveisMedeiros.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArquitetoId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("MontadorId");
+
                     b.ToTable("Obras");
                 });
 
@@ -219,7 +265,17 @@ namespace MoveisMedeiros.Migrations
                     b.Property<int>("ObraId")
                         .HasColumnType("int");
 
+                    b.Property<DateOnly>("Prazo")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("Resolvida")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("MontadorId");
+
+                    b.HasIndex("ObraId");
 
                     b.ToTable("Ocorrencias");
                 });
@@ -258,6 +314,10 @@ namespace MoveisMedeiros.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MontadorId");
+
+                    b.HasIndex("OcorrenciaId");
+
                     b.ToTable("ResolucaoOcorrencias");
                 });
 
@@ -285,6 +345,93 @@ namespace MoveisMedeiros.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("MoveisMedeiros.Models.Checklist", b =>
+                {
+                    b.HasOne("MoveisMedeiros.Models.ItensObra", "ItensObra")
+                        .WithMany()
+                        .HasForeignKey("ItensObraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ItensObra");
+                });
+
+            modelBuilder.Entity("MoveisMedeiros.Models.ItensObra", b =>
+                {
+                    b.HasOne("MoveisMedeiros.Models.Obra", "Obra")
+                        .WithMany()
+                        .HasForeignKey("ObraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Obra");
+                });
+
+            modelBuilder.Entity("MoveisMedeiros.Models.Obra", b =>
+                {
+                    b.HasOne("MoveisMedeiros.Models.Arquiteto", "Arquiteto")
+                        .WithMany()
+                        .HasForeignKey("ArquitetoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MoveisMedeiros.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MoveisMedeiros.Models.Montador", "Montador")
+                        .WithMany()
+                        .HasForeignKey("MontadorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Arquiteto");
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Montador");
+                });
+
+            modelBuilder.Entity("MoveisMedeiros.Models.Ocorrencia", b =>
+                {
+                    b.HasOne("MoveisMedeiros.Models.Montador", "Montador")
+                        .WithMany()
+                        .HasForeignKey("MontadorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MoveisMedeiros.Models.Obra", "Obra")
+                        .WithMany()
+                        .HasForeignKey("ObraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Montador");
+
+                    b.Navigation("Obra");
+                });
+
+            modelBuilder.Entity("MoveisMedeiros.Models.ResolucaoOcorrencia", b =>
+                {
+                    b.HasOne("MoveisMedeiros.Models.Montador", "Montador")
+                        .WithMany()
+                        .HasForeignKey("MontadorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MoveisMedeiros.Models.Ocorrencia", "Ocorrencia")
+                        .WithMany()
+                        .HasForeignKey("OcorrenciaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Montador");
+
+                    b.Navigation("Ocorrencia");
                 });
 #pragma warning restore 612, 618
         }

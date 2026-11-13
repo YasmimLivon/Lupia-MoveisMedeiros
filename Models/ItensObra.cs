@@ -10,7 +10,9 @@
         public string Cor { get; set; }
         public string Local { get; set; }
         public string Status { get; set; }
-        public string Descricao { get; set; }
-        public string Foto { get; set; }
+        public string? Descricao { get; set; }
+        public string? Foto { get; set; }
+
+        public Obra? Obra { get; set; }
     }
 }

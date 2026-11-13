@@ -4,10 +4,11 @@
     {
         public int OcorrenciaId { get; set; }
         public int MontadorId { get; set; }
-        public string AcaoTomada { get; set; }
+        public string AcaoTomada { get; set; } = string.Empty;
         public DateOnly PrazoResolucao { get; set; } 
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public DateTime DataResolucao { get; set; }
-        public string FotoResolucao { get; set; }  
+        public string FotoResolucao { get; set; }  = string.Empty;
+
     }
 }
