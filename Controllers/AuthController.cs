@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoveisMedeiros.Data;
@@ -79,13 +80,12 @@ namespace MoveisMedeiros.Controllers
             }
 
 
-            
-            bool jaExiste = await _context.Usuarios.AnyAsync(u =>
-                (email != null && u.Email == email) ||
-                (cpf != null && u.CPF == cpf) ||
-                (cnpj != null && u.CNPJ == cnpj)
-            );
 
+            bool jaExiste = await _context.Usuarios.AnyAsync(u =>
+            (!string.IsNullOrEmpty(email) && u.Email == email) ||
+            (!string.IsNullOrEmpty(cpf) && u.CPF == cpf) ||
+            (!string.IsNullOrEmpty(cnpj) && u.CNPJ == cnpj)
+            );
 
             if (jaExiste)
             {
@@ -93,7 +93,7 @@ namespace MoveisMedeiros.Controllers
             }
 
 
-            
+
             var novoUsuario = new Usuario
             {
                 Email = email,
