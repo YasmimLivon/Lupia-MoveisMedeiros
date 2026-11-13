@@ -8,6 +8,6 @@
         public DateOnly PrazoResolucao { get; set; } 
         public string Status { get; set; }
         public DateTime DataResolucao { get; set; }
-        public string FotoResolucao { get; set; } 
+        public string FotoResolucao { get; set; }  
     }
 }
